@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牆國外牆製造所 - FF14</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&display=swap');
+        
+        /* 🔧 全域強制捲軸顯示，防止切換分頁時畫面跳動 */
+        html { overflow-y: scroll; }
+        
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #2b221b;
+            background-image: radial-gradient(circle at 50% 30%, rgba(255, 230, 180, 0.08) 0%, transparent 70%),
+                              linear-gradient(to right, rgba(0,0,0,0.15), rgba(0,0,0,0.15));
+            color: #2c221e;
+        }
+        
+        .font-craft { font-family: 'Noto Serif TC', serif; }
+        .font-hand { font-family: 'Caveat', cursive; }
+
+        /* 🖱️ 合適的滑鼠滾輪 (ScrollBar) 配色 */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2b221b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #524335;
+            border-radius: 5px;
+            border: 2px solid #2b221b;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c86d3b;
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #524335 #2b221b;
+        }
+
+        /* 📜 左側邊夾 - 保持固定定位 */
+        .journal-sidebar {
+            background: #3e3127;
+            background-image: linear-gradient(180deg, #483a2e 0%, #34281f 100%);
+            border-right: 4px solid #1f1712;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 📎 金屬長尾夾頭 */
+        .binder-clip {
+            background: linear-gradient(135deg, #c5a059 0%, #8c6827 100%);
+            border: 2px solid #573f13;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.4);
+        }
+
+        /* 🔖 手帳分頁籤 */
+        .journal-tab-btn {
+            background-color: #524335;
+            color: #d8c3af;
+            font-weight: 700;
+            border-radius: 8px 16px 16px 8px;
+            border-left: 4px solid transparent;
+            transition: all 0.25s ease;
+        }
+        .journal-tab-btn:hover {
+            background-color: #635242;
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+        .journal-tab-btn.active {
+            background-color: #f7f3e8;
+            color: #2c221e;
+            font-weight: 900;
+            border-left: 5px solid #c86d3b;
+            box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.25);
+            transform: translateX(6px) rotate(-0.5deg);
+        }
+
+        /* 📄 紙張卡片 */
+        .paper-card {
+            background-color: #f7f3e8;
+            background-image: radial-gradient(#e2d7c3 0.6px, transparent 0.6px);
+            background-size: 16px 16px;
+            border: 1px solid #dcd1be;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* 🏷️ 半透明紙膠帶裝飾 */
+        .tape-deco {
+            position: absolute;
+            height: 24px;
+            width: 90px;
+            background-color: rgba(240, 230, 200, 0.75);
+            border: 1px dashed rgba(180, 160, 120, 0.4);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+
+        /* 📌 印章效果 */
+        .stamp-mark {
+            border: 3px double #a83232;
+            color: #a83232;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            transform: rotate(-8deg);
+            opacity: 0.85;
+            letter-spacing: 2px;
+        }
+
+        /* ✏️ 手寫風輸入框 */
+        .handbook-input {
+            background-color: #eee7d7;
+            border: 1.5px dashed #b8aa93;
+            color: #2c221e;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .handbook-input:focus {
+            border-style: solid;
+            border-color: #c86d3b;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(200, 109, 59, 0.15);
+        }
+
+        /* 🚀 按鈕風格 */
+        .btn-leather {
+            background: linear-gradient(135deg, #c86d3b 0%, #a34e20 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(163, 78, 32, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-leather:hover {
+            transform: translateY(-2deg) rotate(0.5deg);
+            box-shadow: 0 6px 15px rgba(163, 78, 32, 0.4);
+        }
+
+        /* 📂 手帳摺疊卡片箭頭旋轉動畫 */
+        .accordion-arrow {
+            transition: transform 0.25s ease;
+        }
+        .accordion-header.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col md:flex-row relative overflow-x-hidden">
+
+    <!-- =================【左側固定手帳硬殼邊夾 Sidebar】================= -->
+    <aside class="w-full md:w-72 journal-sidebar flex-shrink-0 flex flex-col justify-between z-30 p-5 md:fixed md:top-0 md:bottom-0 md:left-0">
+        <div>
+            <!-- 上方金屬 binder clip 裝飾 -->
+            <div class="binder-clip w-28 h-6 rounded-t-md mx-auto -mt-2 mb-4 flex items-center justify-center">
+                <div class="w-16 h-1 bg-amber-950/40 rounded-full"></div>
+            </div>
+
+            <!-- 手帳首頁告示標籤 -->
+            <div class="bg-[#efe8d8] rounded-xl p-4 text-center mb-6 relative shadow-md transform -rotate-1 border border-[#c8beaa]">
+                <div class="tape-deco -top-3 left-1/2 -translate-x-1/2 rotate-1"></div>
+                <div class="stamp-mark text-[10px] mb-1">WORKSHOP</div>
+                <h1 class="text-3xl font-black text-[#2c221e] font-craft tracking-wider">牆國工坊</h1>
+                <p class="text-xs text-[#736253] font-bold mt-1 font-craft">── FF14 鳳凰白銀 10-60 ──</p>
+            </div>
+
+            <!-- 選項分頁籤 -->
+            <nav class="space-y-2.5">
+                <button onclick="switchTab('location')" id="btn-location" class="journal-tab-btn active w-full px-4 py-3.5 text-left flex items-center justify-start">
+                    <span class="text-lg w-7 text-center flex-shrink-0">📍</span> 
+                    <span class="tracking-wider flex-1">工坊販售位置</span>
+                </button>
+                <button onclick="switchTab('wall')" id="btn-wall" class="journal-tab-btn w-full px-4 py-3.5 text-left flex items-center justify-start">
+                    <span class="text-lg w-7 text-center flex-shrink-0">🏠</span> 
+                    <span class="tracking-wider flex-1">外牆部</span>
+                </button>
+                <button onclick="switchTab('sub')" id="btn-sub" class="journal-tab-btn w-full px-4 py-3.5 text-left flex items-center justify-start">
+                    <span class="text-lg w-7 text-center flex-shrink-0">⚓</span> 
+                    <span class="tracking-wider flex-1">潛艇部</span>
+                </button>
+                <button onclick="switchTab('furniture')" id="btn-furniture" class="journal-tab-btn w-full px-4 py-3.5 text-left flex items-center justify-start">
+                    <span class="text-lg w-7 text-center flex-shrink-0">🪑</span> 
+                    <span class="tracking-wider flex-1">家具部</span>
+                </button>
+                <button onclick="switchTab('support')" id="btn-support" class="journal-tab-btn w-full px-4 py-3.5 text-left flex items-center justify-start">
+                    <span class="text-lg w-7 text-center flex-shrink-0">💌</span> 
+                    <span class="tracking-wider flex-1">我要找客服</span>
+                </button>
+            </nav>
+        </div>
+
+        <div class="bg-[#2a2018] rounded-xl p-4 border border-[#48382b] text-xs text-[#b8a695] space-y-2 mt-6 relative transform rotate-1">
+            <div class="font-hand text-xl text-amber-300/80 -mb-1">Owner's Note</div>
+            <p class="leading-relaxed">本帳冊紀錄 FF14 牆國工坊所有製作預約與交付細節。</p>
+            <div class="text-[10px] text-[#806f60] pt-1 border-t border-[#3d2e22]">Discord 自動通報連線中</div>
+        </div>
+    </aside>
+
+    <!-- =================【右側工作檯主頁 Desktop Workspace】================= -->
+    <main class="flex-1 w-full min-h-screen relative z-10 p-4 md:p-10 md:pl-72 flex justify-center">
+        <div class="w-full max-w-5xl space-y-8">
+
+            <!-- 頂部工作檯手帳抬頭橫幅 -->
+            <header class="paper-card p-6 transform -rotate-0.5">
+                <div class="tape-deco -top-3 left-8 rotate-3"></div>
+                <div class="tape-deco -top-3 right-8 -rotate-2"></div>
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="stamp-mark text-[11px]">CONFIDENTIAL</span>
+                            <span class="font-hand text-2xl text-[#8c592b]">2026 Workshop Logbook</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black text-[#2c221e] font-craft mt-1">牆國工坊 · 製作與交易手帳</h2>
+                    </div>
+                    <div class="bg-[#eee5d3] p-3 rounded-lg border border-[#d2c5ae] text-xs text-[#5e5043] font-mono transform rotate-1 shadow-sm">
+                        <div>📌 繁中服 - 鳳凰</div>
+                        <div>🏠 白銀鄉 10 區 60 號</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 1. 販售地點頁面 -->
+            <div id="tab-location" class="tab-content space-y-6">
+                <div class="paper-card p-6 md:p-8 transform rotate-0.5">
+                    <div class="tape-deco -top-3 left-10 -rotate-2"></div>
+                    <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3 mb-4">
+                        <span class="text-2xl">📍</span>
+                        <h3 class="text-xl font-bold text-[#2c221e] font-craft">工坊據點</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="p-4 bg-[#eee6d4] rounded-xl border border-[#d6c9b1] relative">
+                            <div class="text-xs font-bold text-[#7a6b5c] mb-1">主要伺服器</div>
+                            <div class="text-lg font-black text-[#2c221e]">繁中服 - 鳳凰</div>
+                        </div>
+                        <div class="p-4 bg-[#eee6d4] rounded-xl border border-[#d6c9b1] relative">
+                            <div class="text-xs font-bold text-[#7a6b5c] mb-1">房屋地址</div>
+                            <div class="text-lg font-black text-[#2c221e]">白銀鄉 10 區 60 號</div>
+                        </div>
+                        <div class="col-span-full p-4 bg-[#eee6d4] rounded-xl border border-[#d6c9b1] relative">
+                            <div class="text-xs font-bold text-[#7a6b5c] mb-1">工坊主</div>
+                            <div class="text-lg font-black text-[#2c221e]">小呀小細菌@鳳凰 ｜ 樂燭@鳳凰</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="paper-card p-6 md:p-8 transform -rotate-0.5">
+                    <div class="tape-deco -top-3 right-12 rotate-3"></div>
+                    <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3 mb-4">
+                        <span class="text-2xl">📜</span>
+                        <h3 class="text-xl font-bold text-[#2c221e] font-craft">交易注意事項與流程</h3>
+                    </div>
+                    <ul class="list-disc list-inside space-y-3 text-sm text-[#473b30] leading-relaxed font-medium">
+                        <li>請點選左側選單進行填單。</li>
+                        <li>送出訂單後，工坊主會透過 Discord 與您聯繫確認訂單。</li>
+                        <li>交貨方式：角色面交，請直接至鳳凰白銀鄉 10 區 60 號，進屋找工坊主交易。</li>
+                        <li>若有其他備註，可在填單頁面備註欄進行說明。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. 外牆部 -->
+            <div id="tab-wall" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div class="lg:col-span-5 paper-card p-6 space-y-4 lg:sticky lg:top-8 transform rotate-0">
+                        <div class="tape-deco -top-3 left-1/2 -translate-x-1/2 rotate-1"></div>
+                        <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3">
+                            <span class="text-xl">🏠</span>
+                            <h3 class="text-lg font-bold text-[#2c221e] font-craft">外牆價目表</h3>
+                        </div>
+                        <div id="wall-price-list" class="space-y-3 text-sm"></div>
+                    </div>
+
+                    <div class="lg:col-span-7 paper-card p-6 md:p-8 transform rotate-0.5">
+                        <div class="tape-deco -top-3 right-8 -rotate-2"></div>
+                        <form onsubmit="handleFormSubmit(event, '🏠 牆國 · 外牆部', 'wall-items')" class="space-y-6">
+                            <div class="flex justify-between items-center border-b border-[#ded3c0] pb-3">
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#2c221e] font-craft">外牆下單登記頁</h3>
+                                    <p class="text-xs text-[#7a6b5c] mt-0.5">點擊下方外牆類別，即可展開選擇尺寸與數量</p>
+                                </div>
+                                <span class="stamp-mark text-[10px]">ORDER FORM</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" placeholder="伺服器 (必填) *" required class="handbook-input server-input">
+                                <input type="text" placeholder="角色 ID (必填) *" required class="handbook-input id-input">
+                            </div>
+                            <input type="text" placeholder="Discord 帳號 (必填) *" required class="w-full handbook-input contact-input">
+
+                            <div id="wall-items" class="space-y-3"></div>
+
+                            <textarea placeholder="備註說明（例：方便取貨的時間...）(選填)" class="w-full handbook-input notes-input" rows="2"></textarea>
+
+                            <div class="pt-4 border-t border-[#ded3c0] flex items-center justify-between">
+                                <div><div class="text-xs text-[#7a6b5c]">估計總金額:</div><div class="total-display text-2xl font-mono text-[#a34e20] font-black">0 GIL</div></div>
+                                <button type="submit" class="btn-leather px-6 py-3 rounded-xl font-bold shadow-md">✍️ 簽名送出外牆訂單</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 潛艇部 -->
+            <div id="tab-sub" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div class="lg:col-span-5 paper-card p-6 space-y-4 lg:sticky lg:top-8 transform -rotate-1">
+                        <div class="tape-deco -top-3 left-10 rotate-2"></div>
+                        <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3">
+                            <span class="text-xl">⚓</span>
+                            <h3 class="text-lg font-bold text-[#2c221e] font-craft">潛艇價目表</h3>
+                        </div>
+                        <div id="sub-price-list" class="space-y-3"></div>
+                    </div>
+
+                    <div class="lg:col-span-7 paper-card p-6 md:p-8 transform rotate-0.5">
+                        <div class="tape-deco -top-3 right-10 -rotate-1"></div>
+                        <form onsubmit="handleFormSubmit(event, '⚓ 牆國 · 潛艇部', 'sub-items')" class="space-y-6">
+                            <div class="flex justify-between items-center border-b border-[#ded3c0] pb-3">
+                                <h3 class="text-xl font-bold text-[#2c221e] font-craft">潛艇下單登記頁</h3>
+                                <span class="stamp-mark text-[10px]">SUBMARINE</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" placeholder="伺服器 (必填) *" required class="handbook-input server-input">
+                                <input type="text" placeholder="角色 ID (必填) *" required class="handbook-input id-input">
+                            </div>
+                            <input type="text" placeholder="Discord 帳號 (必填) *" required class="w-full handbook-input contact-input">
+
+                            <div id="sub-items" class="space-y-3"></div>
+
+                            <textarea placeholder="備註說明（例：方便取貨的時間...）(選填)" class="w-full handbook-input notes-input" rows="2"></textarea>
+
+                            <div class="pt-4 border-t border-[#ded3c0] flex items-center justify-between">
+                                <div><div class="text-xs text-[#7a6b5c]">估計總金額:</div><div class="total-display text-2xl font-mono text-[#a34e20] font-black">0 GIL</div></div>
+                                <button type="submit" class="btn-leather px-6 py-3 rounded-xl font-bold shadow-md">✍️ 簽名送出潛艇訂單</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 家具部 -->
+            <div id="tab-furniture" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
+                        
+                        <!-- 卡片 1：家具價目表 -->
+                        <div class="paper-card p-6 space-y-4 transform rotate-1">
+                            <div class="tape-deco -top-3 right-12 -rotate-3"></div>
+                            <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3">
+                                <span class="text-xl">🪑</span>
+                                <h3 class="text-lg font-bold text-[#2c221e] font-craft">家具價目表（不定期上架新品）</h3>
+                            </div>
+
+                            <div class="bg-[#eee5d3] p-4 rounded-xl border border-[#d5c7ae] space-y-2.5 text-sm">
+                                <div class="flex justify-between border-b border-[#d8cbba] pb-2">
+                                    <span class="font-bold text-[#2c221e]">海底的財寶</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">200,000 GIL</span>
+                                </div>
+                                <div class="flex justify-between border-b border-[#d8cbba] pb-2">
+                                    <span class="font-bold text-[#2c221e]">植物套裝（庭具）</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">300,000 GIL</span>
+                                </div>
+                                <div class="flex justify-between border-b border-[#d8cbba] pb-2">
+                                    <span class="font-bold text-[#2c221e]">大理石室內噴泉</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">700,000 GIL</span>
+                                </div>
+                                <div class="flex justify-between border-b border-[#d8cbba] pb-2">
+                                    <span class="font-bold text-[#2c221e]">炭火熨斗</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">2,500,000 GIL</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-bold text-[#2c221e]">簡易噴泉（庭具）</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">2,500,000 GIL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 卡片 2：外觀價目表 -->
+                        <div class="paper-card p-6 space-y-4 transform -rotate-1">
+                            <div class="tape-deco -top-3 left-10 rotate-2"></div>
+                            <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3">
+                                <span class="text-xl">🕶️</span>
+                                <h3 class="text-lg font-bold text-[#2c221e] font-craft">外觀價目表（不定期上架新品）</h3>
+                            </div>
+
+                            <div class="bg-[#eee5d3] p-4 rounded-xl border border-[#d5c7ae] space-y-2.5 text-sm">
+                                <div class="flex justify-between border-b border-[#d8cbba] pb-2">
+                                    <span class="font-bold text-[#2c221e]">藍色印花陽傘</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">300,000 GIL</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="font-bold text-[#2c221e]">臉部配件：經典眼鏡</span>
+                                    <span class="text-[#a34e20] font-mono font-bold">3,000,000 GIL</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 右側：下單登記頁 -->
+                    <div class="lg:col-span-7 paper-card p-6 md:p-8 transform -rotate-0.5">
+                        <div class="tape-deco -top-3 left-8 rotate-2"></div>
+                        <form onsubmit="handleFormSubmit(event, '🪑 牆國 · 家具部', 'furniture-items')" class="space-y-6">
+                            <div class="flex justify-between items-center border-b border-[#ded3c0] pb-3">
+                                <h3 class="text-xl font-bold text-[#2c221e] font-craft">下單登記頁</h3>
+                                <span class="stamp-mark text-[10px]">FURNITURE & GLAMOUR</span>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" placeholder="伺服器 (必填) *" required class="handbook-input server-input">
+                                <input type="text" placeholder="角色 ID (必填) *" required class="handbook-input id-input">
+                            </div>
+                            <input type="text" placeholder="Discord 帳號 (必填) *" required class="w-full handbook-input contact-input">
+
+                            <div id="furniture-items" class="space-y-3"></div>
+
+                            <textarea placeholder="備註說明（例：方便取貨的時間...）(選填)" class="w-full handbook-input notes-input" rows="2"></textarea>
+
+                            <div class="pt-4 border-t border-[#ded3c0] flex items-center justify-between">
+                                <div><div class="text-xs text-[#7a6b5c]">估計總金額:</div><div class="total-display text-2xl font-mono text-[#a34e20] font-black">0 GIL</div></div>
+                                <button type="submit" class="btn-leather px-6 py-3 rounded-xl font-bold shadow-md">✍️ 簽名送出訂單</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 我要找客服 -->
+            <div id="tab-support" class="tab-content hidden space-y-6">
+                <div class="paper-card p-6 md:p-8 transform rotate-0.5">
+                    <div class="tape-deco -top-3 left-10 -rotate-2"></div>
+                    <div class="flex items-center gap-2 border-b border-[#ded3c0] pb-3 mb-4">
+                        <span class="text-2xl">💌</span>
+                        <h3 class="text-xl font-bold text-[#2c221e] font-craft">客服與意見箱</h3>
+                        <span class="stamp-mark text-[10px] ml-auto">SUPPORT & LOVE</span>
+                    </div>
+                    <p class="text-sm text-[#473b30] leading-relaxed mb-6 font-medium">
+                        有任何關於訂單、商品項目的疑問嗎？或是有想對工坊主說的話？歡迎透過下方表單填寫！
+                    </p>
+
+                    <form onsubmit="handleSupportSubmit(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" placeholder="伺服器 (選填)" class="handbook-input" id="support-server">
+                            <input type="text" placeholder="角色 ID / 您的稱呼 (必填) *" required class="handbook-input" id="support-name">
+                        </div>
+                        <input type="text" placeholder="Discord 帳號 (選填)" class="w-full handbook-input" id="support-contact">
+                        
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-[#7a6b5c]">想說的話 / 疑問 / 告白內容 (必填) *</label>
+                            <textarea placeholder="請在此輸入您的問題、建議或想對工坊主說的話..." required class="w-full handbook-input" rows="4" id="support-message"></textarea>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" class="btn-leather px-6 py-3 rounded-xl font-bold shadow-md">💌 投遞訊息至工坊信箱</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1534385510146113549/5QrH08xTDnP9VYqQ3wdN2LhzNrH28v8xSVkQWRn2OFrBQHpxvzDbYD2gi5vVxTzVEqsw";
+
+        // 外牆資料
+        const wallListRaw = [
+            { name: "陸行鳥外牆", s: 1400000, m: 1900000, l: 2400000 },
+            { name: "莫古外牆", s: 4900000, m: 5400000, l: 6000000 },
+            { name: "猴面雀外牆", s: 1400000, m: 1900000, l: 2400000 },
+            { name: "卡邦庫爾外牆", s: 900000, m: 1400000, l: 1900000 },
+            { name: "獺獺外牆", s: 900000, m: 1400000, l: 1900000 },
+            { name: "東洋城堡外牆", s: 500000, m: 700000, l: 900000 },
+            { name: "咖啡館外牆", s: 700000, m: 900000, l: 1200000 },
+            { name: "花店外牆", s: 700000, m: 900000, l: 1200000 },
+            { name: "半木外牆", s: 750000, m: 1200000, l: 1800000 },
+            { name: "鍛冶工坊外牆", s: 700000, m: 900000, l: 1400000 },
+            { name: "鍛造師外牆", s: 1000000, m: 2000000, l: 3000000 },
+            { name: "風雅東洋外牆", s: 400000, m: 700000, l: 1200000 },
+            { name: "鄉間外牆", s: 600000, m: 900000, l: 1200000 },
+            { name: "薑餅外牆", s: 400000, m: 800000, l: 1200000 }
+        ];
+
+        // 資料結構：選單項目 (非庭具排前面，庭具排後面，依價格由便宜到貴排列)
+        const itemsData = {
+            'wall-items': wallListRaw.map(w => ({
+                category: w.name,
+                options: [
+                    { name: `${w.name} (S)`, price: w.s },
+                    { name: `${w.name} (M)`, price: w.m },
+                    { name: `${w.name} (L)`, price: w.l }
+                ]
+            })),
+            'sub-items': [
+                {
+                    category: "⚓ 潛艇套裝",
+                    options: [
+                        { name: "撈金畢業套裝（3124）", desc: "鬚鯨船體 / 鯊魚船尾 / 甲鱟船首 / 腔棘魚艦橋", price: 1400000 },
+                        { name: "衝等套裝（3123全改）- 提供骨架", desc: "鬚鯨改級船體 / 鯊魚改級船尾 / 甲鱟改級船首 / 鬚鯨改級艦橋", price: 3500000 },
+                        { name: "挖寶套裝（4254全改）- 提供骨架", desc: "腔棘魚改級船體 / 甲鱟改級船尾 / 希爾德拉改級船首 / 腔棘魚改級艦橋", price: 3800000 },
+                        { name: "衝等套裝（3123全改）- 未提供骨架", desc: "鬚鯨改級船體 / 鯊魚改級船尾 / 甲鱟改級船首 / 鬚鯨改級艦橋", price: 5200000 },
+                        { name: "挖寶套裝（4254全改）- 未提供骨架", desc: "腔棘魚改級船體 / 甲鱟改級船尾 / 希爾德拉改級船首 / 腔棘魚改級艦橋", price: 5900000 }
+                    ]
+                }
+            ],
+            'furniture-items': [
+                {
+                    category: "潛艇家具",
+                    options: [
+                        { name: "海底的財寶", price: 200000 },
+                        { name: "植物套裝（庭具）", price: 300000 },
+                        { name: "大理石室內噴泉", price: 700000 },
+                        { name: "炭火熨斗", price: 2500000 },
+                        { name: "簡易噴泉（庭具）", price: 2500000 }
+                    ]
+                },
+                {
+                    category: "潛艇外觀",
+                    options: [
+                        { name: "藍色印花陽傘", price: 300000 },
+                        { name: "臉部配件：經典眼鏡", price: 3000000 }
+                    ]
+                }
+            ]
+        };
+
+        // 渲染價目表
+        function renderPriceLists() {
+            const wallContainer = document.getElementById('wall-price-list');
+            if (wallContainer) {
+                wallContainer.innerHTML = wallListRaw.map(w => `
+                    <div class="bg-[#eee5d3] p-3.5 rounded-xl border border-[#d5c7ae] space-y-1.5">
+                        <div class="font-bold text-[#2c221e]">${w.name}</div>
+                        <div class="text-xs space-y-0.5 font-mono text-[#574a3e]">
+                            <div class="flex justify-between"><span>S 尺寸</span><span class="text-[#a34e20] font-bold">${w.s.toLocaleString()} GIL</span></div>
+                            <div class="flex justify-between"><span>M 尺寸</span><span class="text-[#a34e20] font-bold">${w.m.toLocaleString()} GIL</span></div>
+                            <div class="flex justify-between"><span>L 尺寸</span><span class="text-[#a34e20] font-bold">${w.l.toLocaleString()} GIL</span></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const subContainer = document.getElementById('sub-price-list');
+            if (subContainer) {
+                const subOptions = itemsData['sub-items'][0].options;
+                subContainer.innerHTML = subOptions.map(s => `
+                    <div class="bg-[#eee5d3] p-4 rounded-xl border border-[#d5c7ae] space-y-1">
+                        <div class="font-bold text-[#2c221e]">${s.name}</div>
+                        <div class="text-xs text-[#574a3e] leading-relaxed">${s.desc}</div>
+                        <div class="text-[#a34e20] font-mono font-bold text-right text-base pt-1">${s.price.toLocaleString()} GIL</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // 渲染摺疊選單
+        function renderItems() {
+            Object.keys(itemsData).forEach(containerId => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.innerHTML = itemsData[containerId].map((cat, groupIdx) => `
+                    <div class="bg-[#eee6d4] rounded-xl border border-[#d6c9b1] overflow-hidden shadow-sm">
+                        <button type="button" onclick="toggleAccordion('${containerId}-${groupIdx}')" id="header-${containerId}-${groupIdx}" class="accordion-header w-full p-4 flex justify-between items-center bg-[#e8deca] hover:bg-[#ded1ba] transition-all text-left font-bold text-[#2c221e]">
+                            <span class="text-base font-craft">${cat.category}</span>
+                            <div class="flex items-center gap-2">
+                                <span id="badge-${containerId}-${groupIdx}" class="text-xs bg-[#c86d3b] text-white px-2 py-0.5 rounded-full font-mono hidden">已選 0</span>
+                                <span class="accordion-arrow text-sm text-[#7a6b5c]">▼</span>
+                            </div>
+                        </button>
+                        
+                        <div id="body-${containerId}-${groupIdx}" class="hidden p-3.5 space-y-3 bg-[#f3ede0] border-t border-[#d8cbbb]">
+                            ${cat.options.map(item => `
+                                <div class="flex items-center justify-between p-2.5 bg-[#fcfaf5] rounded-lg border border-[#e2d7c5]">
+                                    <div>
+                                        <div class="font-bold text-sm text-[#2c221e]">${item.name}</div>
+                                        ${item.desc ? `<div class="text-xs text-[#7a6b5c] mt-0.5">${item.desc}</div>` : ''}
+                                        <div class="text-xs text-[#a34e20] font-mono font-bold mt-0.5">${item.price.toLocaleString()} GIL</div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" onclick="adjustQty(this, -1, '${containerId}-${groupIdx}')" class="w-8 h-8 bg-[#e8deca] hover:bg-[#ded1ba] text-[#2c221e] rounded-lg font-bold transition-all">-</button>
+                                        <input type="number" min="0" value="0" data-name="${item.name}" data-price="${item.price}" onchange="calculateFormTotal(this, '${containerId}-${groupIdx}')" class="w-12 text-center handbook-input item-qty !py-1 !px-0 font-bold">
+                                        <button type="button" onclick="adjustQty(this, 1, '${containerId}-${groupIdx}')" class="w-8 h-8 bg-[#e8deca] hover:bg-[#ded1ba] text-[#2c221e] rounded-lg font-bold transition-all">+</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function toggleAccordion(id) {
+            const body = document.getElementById(`body-${id}`);
+            const header = document.getElementById(`header-${id}`);
+            body.classList.toggle('hidden');
+            header.classList.toggle('active');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.journal-tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabName}`).classList.add('active');
+        }
+
+        function adjustQty(btn, delta, groupId) {
+            const input = btn.parentElement.querySelector('.item-qty');
+            let val = parseInt(input.value) || 0;
+            val = Math.max(0, val + delta);
+            input.value = val;
+            calculateFormTotal(input, groupId);
+        }
+
+        function calculateFormTotal(element, groupId) {
+            const form = element.closest('form');
+            let total = 0;
+            
+            form.querySelectorAll('.item-qty').forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const price = parseInt(input.dataset.price) || 0;
+                total += qty * price;
+            });
+            form.querySelector('.total-display').innerText = total.toLocaleString() + ' GIL';
+
+            if (groupId) {
+                const groupBody = document.getElementById(`body-${groupId}`);
+                let groupQty = 0;
+                groupBody.querySelectorAll('.item-qty').forEach(input => {
+                    groupQty += parseInt(input.value) || 0;
+                });
+                
+                const badge = document.getElementById(`badge-${groupId}`);
+                if (groupQty > 0) {
+                    badge.innerText = `已選 ${groupQty}`;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            return total;
+        }
+
+        async function handleFormSubmit(e, deptTitle, itemsContainerId) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            let total = 0;
+            let itemsList = [];
+            
+            document.getElementById(itemsContainerId).querySelectorAll('.item-qty').forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                if (qty > 0) {
+                    const price = parseInt(input.dataset.price) || 0;
+                    total += qty * price;
+                    itemsList.push(`• **${input.dataset.name}** x ${qty}`);
+                }
+            });
+
+            if (total === 0) {
+                alert('請至少選擇一項商品與數量！');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "發送中...";
+
+            const server = form.querySelector('.server-input').value;
+            const gameId = form.querySelector('.id-input').value;
+            const contact = form.querySelector('.contact-input').value;
+            const notes = form.querySelector('.notes-input').value || '無';
+
+            const payload = {
+                username: "牆國訂單通知",
+                avatar_url: "https://ff14.huijiwiki.com/wiki/Special:FilePath/FC_Company_Craft.png",
+                embeds: [{
+                    title: `📦 收到來自 [${deptTitle}] 的新訂單！`,
+                    color: 10702368,
+                    fields: [
+                        { name: "👤 買家資訊", value: `**伺服器：** ${server}\n**ID：** ${gameId}\n**聯絡方式：** ${contact}`, inline: false },
+                        { name: "🛒 訂購內容", value: itemsList.join("\n"), inline: false },
+                        { name: "💰 總金額", value: `**${total.toLocaleString()} GIL**`, inline: true },
+                        { name: "📝 備註", value: notes, inline: true }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('🎉 訂單已成功送出！工坊主會盡快與您聯繫！');
+                    form.reset();
+                    form.querySelector('.total-display').innerText = '0 GIL';
+                    document.getElementById(itemsContainerId).querySelectorAll('.text-xs.bg-\\[\\#c86d3b\\]').forEach(badge => badge.classList.add('hidden'));
+                } else {
+                    alert('送出失敗，請稍後再試或直接聯繫工坊主。');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('網路錯誤，請稍後再試。');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "✍️ 簽名送出訂單";
+            }
+        }
+
+        async function handleSupportSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "投遞中...";
+
+            const server = document.getElementById('support-server').value || '未填';
+            const name = document.getElementById('support-name').value;
+            const contact = document.getElementById('support-contact').value || '未填';
+            const message = document.getElementById('support-message').value;
+
+            const payload = {
+                username: "牆國客服意見箱",
+                avatar_url: "https://ff14.huijiwiki.com/wiki/Special:FilePath/FC_Company_Craft.png",
+                embeds: [{
+                    title: `💌 收到來自【客服 / 意見箱】的新訊息！`,
+                    color: 14526272,
+                    fields: [
+                        { name: "👤 聯絡人資訊", value: `**伺服器：** ${server}\n**稱呼/ID：** ${name}\n**Discord：** ${contact}`, inline: false },
+                        { name: "💬 訊息內容 / 告白", value: message, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('💖 訊息已成功投遞至工坊信箱！工坊主會盡快查看您的留言！');
+                    form.reset();
+                } else {
+                    alert('送出失敗，請稍後再試。');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('網路錯誤，請稍後再試。');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "💌 投遞訊息至工坊信箱";
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPriceLists();
+            renderItems();
+        });
+    </script>
+</body>
+</html>
