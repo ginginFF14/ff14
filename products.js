@@ -69,18 +69,16 @@ const itemsData = {
                 { name: "藍帽蘑菇檯燈", price: 1800000 },
                 { name: "小小巨嘴鳥 (寵物 )", price: 3500000 },
                 { name: "自然的禮物 (樂譜 )", price: 2800000 },
-                { name: "青藍之手掛鐘", price: 800000 },
+                { name: "青藍之手掛鐘", price: 300000 },
                 { name: "佈滿苔蘚的圓木", price: 500000 },
                 { name: "自然原木隔離矮牆", price: 300000 },
-                { name: "野營套裝", price: 750000 },
-                { name: "冰盒", price: 150000 },
             ]
         },
 
         {
             category: "潛艇外觀",
             options: [
-                { name: "紫漆油紙傘", price: 500000 }
+                { name: "紫漆油紙傘", price: 50000 }
             ]
         }
     ]
