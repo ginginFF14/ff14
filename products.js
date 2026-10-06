@@ -66,7 +66,8 @@ const itemsData = {
         {
             category: "潛艇家具",
             options: [
-                { name: "小小巨嘴鳥 (寵物 )", price: 2500000 },
+                { name: "舊化的舷窗", price: 5000000 },
+                { name: "樂譜：技師工坊", price: 1000000 },
                 { name: "金屬管置物架", price: 800000 },
                 { name: "熱帶風情獨立式吊床", price: 450000 },
                 { name: "青藍之手掛鐘", price: 300000 },
