@@ -68,15 +68,17 @@ const itemsData = {
             options: [
                 { name: "舊化的舷窗", price: 5000000 },
                 { name: "野營套裝", price: 500000 },
+                { name: "磚石圈", price: 3500000 },
+                { name: "熱帶風情四柱床", price: 2500000 },
+                { name: "樂譜：技師工坊", price: ８00000 },
+                { name: "抱石攀岩隔離牆", price: 2000000 },
                 { name: "鄉村原木桌", price: 200000 },
                 { name: "鄉村原木座椅", price: 200000 },
                 { name: "大理石室內噴泉", price: 400000 },
                 { name: "常春藤白拱橋", price: 400000 },
-                { name: "樂譜：技師工坊", price: 1000000 },
-                { name: "金屬管置物架", price: 800000 },
+                { name: "金屬管置物架", price: 600000 },
                 { name: "熱帶風情獨立式吊床", price: 100000 },
                 { name: "青藍之手掛鐘", price: 300000 },
-                { name: "佈滿苔蘚的圓木", price: 300000 },
                 { name: "自然原木隔離矮牆", price: 100000 },
             ]
         },
@@ -84,7 +86,7 @@ const itemsData = {
         {
             category: "潛艇外觀",
             options: [
-                { name: "臉部配件:經典眼鏡", price: 500000 }
+                { name: "臉部配件：經典眼鏡", price: 500000 }
             ]
         }
     ]
