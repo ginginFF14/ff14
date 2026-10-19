@@ -66,20 +66,19 @@ const itemsData = {
         {
             category: "潛艇家具",
             options: [
-                { name: "舊化的舷窗", price: 3200000 },
-                { name: "圓形地燈", price: 2800000 },
-                { name: "螢光管吊燈", price: 1800000 },
-                { name: "雙檯面桌子", price: 3600000 },
+                { name: "舊化的舷窗", price: 2500000 },
+                { name: "圓形地燈", price: 1200000 },
+                { name: "石製臺階", price: 150000 },
                 { name: "野營套裝", price: 500000 },
-                { name: "磚石圈", price: 3500000 },
-                { name: "熱帶風情四柱床", price: 2500000 },
-                { name: "樂譜：技師工坊", price: 800000 },
-                { name: "抱石攀岩隔離牆", price: 1500000 },
+                { name: "磚石圈", price: 1800000 },
+                { name: "熱帶風情四柱床", price: 2200000 },
+                { name: "樂譜：技師工坊", price: 500000 },
+                { name: "抱石攀岩隔離牆", price: 900000 },
                 { name: "鄉村原木桌", price: 200000 },
                 { name: "鄉村原木座椅", price: 200000 },
                 { name: "大理石室內噴泉", price: 400000 },
                 { name: "常春藤白拱橋", price: 400000 },
-                { name: "金屬管置物架", price: 600000 },
+                { name: "金屬管置物架", price: 100000 },
                 { name: "熱帶風情獨立式吊床", price: 100000 },
                 { name: "青藍之手掛鐘", price: 300000 },
                 { name: "自然原木隔離矮牆", price: 100000 },
@@ -89,7 +88,7 @@ const itemsData = {
         {
             category: "潛艇外觀",
             options: [
-                { name: "臉部配件：經典眼鏡 (缺貨中)", price: 500000 }
+                { name: "臉部配件：經典眼鏡", price: 500000 }
             ]
         }
     ]
