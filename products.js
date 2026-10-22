@@ -66,14 +66,15 @@ const itemsData = {
         {
             category: "潛艇家具",
             options: [
+                { name: "菱格櫃櫥", price: 5000000 },
                 { name: "舊化的舷窗", price: 2500000 },
-                { name: "圓形地燈", price: 1200000 },
+                { name: "圓形地燈", price: 1000000 },
                 { name: "石製臺階", price: 150000 },
                 { name: "野營套裝", price: 500000 },
-                { name: "磚石圈", price: 1800000 },
+                { name: "磚石圈", price: 1400000 },
                 { name: "熱帶風情四柱床", price: 2200000 },
                 { name: "樂譜：技師工坊", price: 500000 },
-                { name: "抱石攀岩隔離牆", price: 900000 },
+                { name: "抱石攀岩隔離牆", price: 800000 },
                 { name: "鄉村原木桌", price: 200000 },
                 { name: "鄉村原木座椅", price: 200000 },
                 { name: "大理石室內噴泉", price: 400000 },
